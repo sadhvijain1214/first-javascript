@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="clock-container">
+        <h1>Digital Clock</h1>
+        <div id="clock">00:00:00</div>
+        <p id="date"></p>
+        <p class="message">Make every second count ✨</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #312e81);
+    color: white;
+}
+
+.clock-container {
+    text-align: center;
+    padding: 40px 30px;
+    width: min(90%, 500px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+#clock {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-weight: bold;
+    color: #67e8f9;
+    text-shadow: 0 0 20px rgba(103, 232, 249, 0.4);
+}
+
+#date {
+    margin-top: 18px;
+    font-size: 1.1rem;
+    color: #cbd5e1;
+}
+
+.message {
+    margin-top: 25px;
+    color: #a5b4fc;
+}
+
+function updateClock() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    });
+
+    const date = now.toLocaleDateString("en-IN", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+
+    document.getElementById("clock").textContent = time;
+    document.getElementById("date").textContent = date;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
