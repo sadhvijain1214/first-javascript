@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="calculator">
+        <h2>Calculator</h2>
+
+        <input type="text" id="display"
+               placeholder="0" readonly
+               aria-label="Calculator display">
+
+        <div class="buttons">
+            <button class="clear">C</button>
+            <button class="operator">/</button>
+            <button class="operator">*</button>
+            <button class="operator">-</button>
+
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="operator">+</button>
+
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button>.</button>
+
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button class="equal">=</button>
+
+            <button class="zero">0</button>
+            <button>⌫</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    width: 320px;
+    padding: 22px;
+    background: #1e293b;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px #0005;
+}
+
+h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+#display {
+    width: 100%;
+    height: 65px;
+    margin-bottom: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #f8fafc;
+    text-align: right;
+    font-size: 28px;
+    color: #0f172a;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    height: 52px;
+    border: none;
+    border-radius: 10px;
+    background: #334155;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #475569;
+}
+
+.operator {
+    background: #6366f1;
+}
+
+.clear {
+    background: #ef4444;
+}
+
+.equal {
+    background: #16a34a;
+    grid-row: span 2;
+    height: auto;
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+const display = document.getElementById("display");
+const buttons = document.querySelectorAll(".buttons button");
+
+let expression = "";
+
+function calculate(input) {
+    const tokens = input.match(
+        /(?:\d+\.?\d*|\.\d+)|[+\-*/]/g
+    );
+
+    if (!tokens || tokens.join("") !== input) {
+        throw new Error("Invalid expression");
+    }
+
+    let position = 0;
+
+    function factor() {
+        if (tokens[position] === "-") {
+            position++;
+            return -factor();
+        }
+
+        if (tokens[position] === "+") {
+            position++;
+            return factor();
+        }
+
+        const token = tokens[position++];
+
+        if (!token || !/^(?:\d+\.?\d*|\.\d+)$/.test(token)) {
+            throw new Error("Invalid expression");
+        }
+
+        return Number(token);
+    }
+
+    function term() {
+        let value = factor();
+
+        while (tokens[position] === "*" ||
+               tokens[position] === "/") {
+            const operator = tokens[position++];
+            const next = factor();
+
+            if (operator === "/" && next === 0) {
+                throw new Error("Cannot divide by zero");
+            }
+
+            value = operator === "*"
+                ? value * next
+                : value / next;
+        }
+
+        return value;
+    }
+
+    function sum() {
+        let value = term();
+
+        while (tokens[position] === "+" ||
+               tokens[position] === "-") {
+            const operator = tokens[position++];
+            const next = term();
+
+            value = operator === "+"
+                ? value + next
+                : value - next;
+        }
+
+        return value;
+    }
+
+    const result = sum();
+
+    if (position !== tokens.length || !Number.isFinite(result)) {
+        throw new Error("Invalid expression");
+    }
+
+    return Number(result.toPrecision(12)).toString();
+}
+
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        const value = button.textContent.trim();
+
+        if (button.classList.contains("clear")) {
+            expression = "";
+            display.value = "";
+            return;
+        }
+
+        if (button.classList.contains("equal")) {
+            if (!expression) return;
+
+            try {
+                expression = calculate(expression);
+                display.value = expression;
+            } catch (error) {
+                display.value = error.message;
+                expression = "";
+            }
+
+            return;
+        }
+
+        if (value === "⌫") {
+            expression = expression.slice(0, -1);
+        } else {
+            expression += value;
+        }
+
+        display.value = expression;
+    });
+});
