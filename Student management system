@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🎓 Student Management</h1>
+            <p>Manage your student records easily</p>
+        </header>
+
+        <section class="form-card">
+            <h2 id="formTitle">Add New Student</h2>
+
+            <form id="studentForm">
+                <input type="hidden" id="editId">
+
+                <div class="form-grid">
+                    <div>
+                        <label for="name">Student Name</label>
+                        <input type="text" id="name"
+                               placeholder="Enter full name" required>
+                    </div>
+
+                    <div>
+                        <label for="roll">Roll Number</label>
+                        <input type="text" id="roll"
+                               placeholder="Enter roll number" required>
+                    </div>
+
+                    <div>
+                        <label for="course">Course</label>
+                        <input type="text" id="course"
+                               placeholder="e.g. B.Tech CSE" required>
+                    </div>
+
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email"
+                               placeholder="student@example.com" required>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" id="submitBtn">
+                        Add Student
+                    </button>
+                    <button type="button" id="cancelBtn" hidden>
+                        Cancel Edit
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="records-card">
+            <div class="records-header">
+                <h2>Student Records</h2>
+                <input type="search" id="search"
+                       placeholder="Search students..."
+                       aria-label="Search student records">
+            </div>
+
+            <p id="count">Total Students: 0</p>
+            <p id="message" role="status"></p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Roll No.</th>
+                            <th>Course</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 30px 16px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: #4f46e5;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #64748b;
+}
+
+.form-card,
+.records-card {
+    background: white;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px #0f172a0d;
+}
+
+h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: 2px solid #a5b4fc;
+    border-color: #6366f1;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 16px;
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+#cancelBtn {
+    background: #64748b;
+}
+
+.records-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.records-header h2 {
+    margin-bottom: 12px;
+}
+
+#search {
+    max-width: 280px;
+    margin-bottom: 12px;
+}
+
+#count {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+#message {
+    color: #4f46e5;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th,
+td {
+    text-align: left;
+    padding: 14px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+th {
+    background: #eef2ff;
+    color: #4338ca;
+}
+
+.edit-btn {
+    background: #0d9488;
+    margin: 2px;
+}
+
+.delete-btn {
+    background: #dc2626;
+    margin: 2px;
+}
+
+.empty {
+    text-align: center;
+    color: #64748b;
+    padding: 25px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .form-card,
+    .records-card {
+        padding: 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .records-header {
+        align-items: stretch;
+    }
+
+    #search {
+        max-width: 100%;
+    }
+}
+
+const form = document.getElementById("studentForm");
+const nameInput = document.getElementById("name");
+const rollInput = document.getElementById("roll");
+const courseInput = document.getElementById("course");
+const emailInput = document.getElementById("email");
+const editIdInput = document.getElementById("editId");
+
+const table = document.getElementById("studentTable");
+const searchInput = document.getElementById("search");
+const count = document.getElementById("count");
+const message = document.getElementById("message");
+const formTitle = document.getElementById("formTitle");
+const submitBtn = document.getElementById("submitBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+let students = [];
+
+try {
+    students = JSON.parse(
+        localStorage.getItem("students") || "[]"
+    );
+
+    if (!Array.isArray(students)) {
+        students = [];
+    }
+} catch {
+    students = [];
+}
+
+function saveStudents() {
+    try {
+        localStorage.setItem("students", JSON.stringify(students));
+        return true;
+    } catch {
+        showMessage("Unable to save data in this browser.");
+        return false;
+    }
+}
+
+function showMessage(text) {
+    message.textContent = text;
+}
+
+function resetForm() {
+    form.reset();
+    editIdInput.value = "";
+    formTitle.textContent = "Add New Student";
+    submitBtn.textContent = "Add Student";
+    cancelBtn.hidden = true;
+}
+
+function renderStudents() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    const filtered = students.filter(student =>
+        [student.name, student.roll, student.course, student.email]
+            .some(value => value.toLowerCase().includes(query))
+    );
+
+    table.replaceChildren();
+
+    count.textContent =
+        `Total Students: ${students.length}`;
+
+    if (filtered.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.className = "empty";
+        cell.textContent = "No student records found.";
+
+        row.appendChild(cell);
+        table.appendChild(row);
+        return;
+    }
+
+    filtered.forEach(student => {
+        const row = document.createElement("tr");
+
+        [student.name, student.roll, student.course, student.email]
+            .forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+        const actionCell = document.createElement("td");
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.className = "edit-btn";
+        editBtn.dataset.action = "edit";
+        editBtn.dataset.id = student.id;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.dataset.action = "delete";
+        deleteBtn.dataset.id = student.id;
+
+        actionCell.append(editBtn, deleteBtn);
+        row.appendChild(actionCell);
+        table.appendChild(row);
+    });
+}
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const student = {
+        name: nameInput.value.trim(),
+        roll: rollInput.value.trim(),
+        course: courseInput.value.trim(),
+        email: emailInput.value.trim()
+    };
+
+    const editingId = editIdInput.value;
+
+    const duplicate = students.some(item =>
+        item.roll.toLowerCase() === student.roll.toLowerCase() &&
+        item.id !== editingId
+    );
+
+    if (duplicate) {
+        showMessage("This roll number already exists.");
+        return;
+    }
+
+    if (editingId) {
+        const index = students.findIndex(
+            item => item.id === editingId
+        );
+
+        if (index === -1) {
+            showMessage("Student record not found.");
+            return;
+        }
+
+        students[index] = { ...students[index], ...student };
+    } else {
+        students.push({
+            id: crypto.randomUUID(),
+            ...student
+        });
+    }
+
+    if (!saveStudents()) {
+        return;
+    }
+
+    showMessage(
+        editingId
+            ? "Student updated successfully!"
+            : "Student added successfully!"
+    );
+
+    resetForm();
+    renderStudents();
+});
+
+table.addEventListener("click", function(event) {
+    const button = event.target.closest("button[data-action]");
+
+    if (!button) return;
+
+    const id = button.dataset.id;
+    const student = students.find(item => item.id === id);
+
+    if (!student) return;
+
+    if (button.dataset.action === "edit") {
+        nameInput.value = student.name;
+        rollInput.value = student.roll;
+        courseInput.value = student.course;
+        emailInput.value = student.email;
+        editIdInput.value = student.id;
+
+        formTitle.textContent = "Edit Student";
+        submitBtn.textContent = "Update Student";
+        cancelBtn.hidden = false;
+
+        form.scrollIntoView({ behavior: "smooth" });
+    }
+
+    if (button.dataset.action === "delete") {
+        const confirmed = confirm(
+            `Delete the record for ${student.name}?`
+        );
+
+        if (!confirmed) return;
+
+        const previousStudents = students;
+        students = students.filter(item => item.id !== id);
+
+        if (!saveStudents()) {
+            students = previousStudents;
+            return;
+        }
+
+        if (editIdInput.value === id) {
+            resetForm();
+        }
+
+        showMessage("Student deleted successfully!");
+        renderStudents();
+    }
+});
+
+cancelBtn.addEventListener("click", resetForm);
+
+searchInput.addEventListener("input", renderStudents);
+
+renderStudents();
